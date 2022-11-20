@@ -5,8 +5,10 @@ const chatBox = document.querySelector(".chat-content");
 const displayMsg = document.querySelector(".message");
 
 let name;
+let type;
 do {
   name = prompt("what is your name");
+  type = prompt("khachhang?")
 } while (!name);
 
 document.querySelector("#your-name").textContent = name;
@@ -22,11 +24,12 @@ btnSend.addEventListener("click", (e) => {
 const sendMsg = (message) => {
   let msg = {
     user: name,
+    type: type,
     message: message.trim(),
   };
   //API lấy tên
   display(msg, "you-message");
-  socket.emit("sendMessage", msg);
+  socket.emit("sendMessage",msg);
   //
 };
 
