@@ -14,15 +14,17 @@ const io = require("socket.io")(http);
 io.on("connection", (socket) => {
   console.log("Connected");
   socket.on("sendMessage", (msg) => {
-    // console.log(msg);
+    console.log("gui mess on sever: ",msg);
     axios({
       method: 'post',
       url: 'https://sheetdb.io/api/v1/eqmb0knb7l8rv',
       data: {
-        id: msg.user,
-        type: msg.type,
-        tinnhan: msg.message,
-        time:  new Date(),
+        id: msg.id,
+        name: msg.name,
+        message: msg.message,
+        to: msg.to,
+        realtime: new Date(),
+        time:  new Date().toLocaleTimeString(),
       }
     });
     socket.broadcast.emit("sendToAll", msg);

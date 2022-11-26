@@ -186,3 +186,23 @@ body {
   max-width: 400px;
     max-height: 400px;
 }
+
+/* List */
+
+.user-select {
+  display: flex;
+    justify-content: space-between;
+    box-shadow: rgb(149 157 165 / 20%) 0px 8px 24px;
+    padding: 10px 20px;
+    width: 200px;
+    margin: 10px;
+  cursor: pointer;
+}
+
+.user-selected{
+  background: burlywood;
+}
+
+.l-user-name {
+  font-weight: 900;
+}

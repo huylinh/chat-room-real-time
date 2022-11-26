@@ -6,33 +6,122 @@ const displayMsg = document.querySelector(".message");
 var output = document.getElementById('output');
 
 let data;
-
+let selectId = 1; //mac dinh chu cua hang noi chuyen voi nguoi 1
+let listUsers;
 
 axios.get('https://sheetdb.io/api/v1/eqmb0knb7l8rv')
 .then(function (response) {
-  data = response.data;
-  console.log(data);
 
-  data.forEach(element => {
-    if ((element.id == type) || (element.type == type)) {
-      display({
-        message: element.tinnhan},"you-message");
-    } else display({
-      message: element.tinnhan},"other-message");
-  });
+  //Sau khi lay duoc data
+
+  //Chuong trinh se chay sau khi lay het data
+  
+
+  data = response.data;
+
+  main();
+  console.log(data);
+  if (id==-1) hienthiNguoiDung();
+  hienthiData();
 })
 .catch(function (error) {
   console.log(error);
 });
 
-let name;
-let type;
-do {
-  name = prompt("what is your name");
-  type = prompt("khachhang?")
-} while (!name);
+//Hien thi data lich su dua theo selectId va id nguoi dung
+function hienthiData() {
 
-document.querySelector("#your-name").textContent = name;
+  document.querySelector(".message").innerHTML = "";
+
+  if (id == -1) {
+    data.forEach(element => {
+      console.log("Vong lap trong hien thi data",element)
+      if (element.id == id && element.to == selectId) {   //chu cua hang
+        display(element,"you-message");
+      } else if (element.id == selectId)  //
+        display(element,"other-message");
+  
+    });
+  }
+  else {
+    data.forEach(element => {
+      console.log("Vong lap trong hien thi data",element)
+      if (element.id == id) {   //tin nhan cua ban than
+        display(element,"you-message");
+      } else if (element.id == -1 && element.to == id)  //neu k phai chua cua hang => mac dinh noi chuyen voi doi tuong la chu cua hang id = -1, con khong thi tuy vao selectId
+        display(element,"other-message");
+  
+    });
+  }
+}
+
+function hienthiNguoiDung() {
+  const key = 'id';
+  listUsers = [...new Map(data.map(item =>
+    [item[key], item])).values()];
+
+  listUsers.forEach(element => {
+    if (element.id != id) {
+      document.getElementById('list-wrap').innerHTML += `
+      <div class="user-select" id=${element.id}>
+      <div class="l-user-name">
+        ${element.name}
+      </div>
+      <div class="l-user-time">
+        20ms
+      </div>
+    </div>`
+    }
+  });
+
+  document.querySelectorAll(".user-select").forEach((user)=>{
+    user.addEventListener('click',(e) => {
+      selectId = user.id;
+      hienthiData();
+      highLight(selectId);
+      console.log(e);
+    })
+  })
+
+  highLight(selectId);
+
+}
+
+function highLight(id) {
+  //xoa het mau neu co
+  console.log("Highlight ID: ", id);
+  document.querySelectorAll(".user-select").forEach((user)=>{
+    user.classList.remove('user-selected');
+  })
+  document.getElementById(id).classList.add('user-selected');
+}
+
+let id;
+let name;
+
+function main() {
+  do {
+    id = prompt("what is your id");
+    // if(id!=-1) name = prompt("What is your name: "); else name = "Chu cua hang";
+  
+    //chu cua hang
+    if (id == -1) {
+      name = "Nhan vien tu van";
+      break;
+    }
+  
+    const found = data.find(element => element.id == id);
+    
+    if (found) {
+      name = found.name;
+    } else {
+      name = prompt("Chao mung ban moi, ten cua ban la: ");
+    }
+  } while (!id);
+
+  document.querySelector("#your-name").textContent = name;
+}
+
 btnSend.addEventListener("click", (e) => {
   e.preventDefault(); //bấm submit chuyển trang nên cần cái này dể giữ trang còn nguyên
 
@@ -49,9 +138,11 @@ btnSend.addEventListener("click", (e) => {
 
 const sendMsg = (message) => {
   let msg = {
-    user: name,
-    type: type,
+    id: id,
+    name: name,
+    to:  id==-1? selectId : -1,
     message: message.trim(),
+    time: new Date().toLocaleTimeString()
   };
   //API lấy tên
   display(msg, "you-message");
@@ -68,19 +159,17 @@ socket.on("sendToAll", (msg) => {
 const display = (msg, type) => {
   console.log(msg);
 
-  const msgDiv = document.createElement("div");
-  let className = type;
-  msgDiv.classList.add(className, "message-row");
-  let times = new Date().toLocaleTimeString();
-  const imgOrText = checkURL(msg.message) ? `<img class="img-chat-view" src="${msg.message}" alt="">` : `<div class="message-text">${msg.message}</div>`
-  let innerText = `
-  <div class="message-title">🤤<span>${msg.user}</span></div>
-  ${imgOrText}
-  <div class="message-time">${times}</div>
-    `;
-  msgDiv.innerHTML = innerText;
-  displayMsg.appendChild(msgDiv);
-  
+    const msgDiv = document.createElement("div");
+    let className = type;
+    msgDiv.classList.add(className, "message-row");
+    const imgOrText = checkURL(msg.message) ? `<img class="img-chat-view" src="${msg.message}" alt="">` : `<div class="message-text">${msg.message}</div>`
+    let innerText = `
+    <div class="message-title">🤤<span>${msg.name}</span></div>
+    ${imgOrText}
+    <div class="message-time">${msg.time}</div>
+      `;
+    msgDiv.innerHTML = innerText;
+    displayMsg.appendChild(msgDiv);
 };
 
 // querry
@@ -187,5 +276,7 @@ function uploadToFileBase() {
 }
 
 function checkURL(url) {
-  return url.includes("uploadfiletofirebase-ae63f.appspot.com");
+  return url?.includes("uploadfiletofirebase-ae63f.appspot.com");
 }
+
+// List
