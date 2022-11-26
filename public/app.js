@@ -79,6 +79,7 @@ function hienthiNguoiDung() {
       selectId = user.id;
       hienthiData();
       highLight(selectId);
+      readed(selectId);
       console.log(e);
     })
   })
@@ -94,6 +95,16 @@ function highLight(id) {
     user.classList.remove('user-selected');
   })
   document.getElementById(id).classList.add('user-selected');
+}
+
+function newMess(id) {
+  //xoa het mau neu co
+  console.log("New mess ID: ", id);
+  document.getElementById(id).classList.add('user-new-mess');
+}
+
+function readed(id) {
+  document.getElementById(id).classList.remove('user-new-mess');
 }
 
 let id;
@@ -151,7 +162,18 @@ const sendMsg = (message) => {
 };
 
 socket.on("sendToAll", (msg) => {
-  display(msg, "other-message");
+
+  const found = data.find(element => element.id == msg.id);
+
+  console.log('Found?',found,msg);
+  if (found) {
+    if (found != selectId) {
+      newMess(msg.id);
+    } else display(msg, "other-message");
+  } else {
+    data.push(msg);
+    newMess(msg.id);
+  }
   //mỗi lần mình display mesage là phải cập nhật cho scrollop = vị trí y của chat xuống cuối
   chatBox.scrollTop = chatBox.scrollHeight;
 });
@@ -194,6 +216,7 @@ document.getElementById("file").addEventListener('change', (e) => {
     hasImg = true;
 })
 
+import e from "express";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
 
