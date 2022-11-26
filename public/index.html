@@ -10,6 +10,8 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
     <title>Document</title>
   </head>
   <body>
@@ -38,6 +40,7 @@
               </div>
             </div>
           </div>
+          <img id="output" src="#" alt="your image" />
         </div>
         <!-- ------------------------------------------- -->
         <form action="" class="msg-text">
@@ -48,11 +51,13 @@
             placeholder="Type message here ...."
             autocomplete="off"
           />
-          <button id="btn-send"><i class="fas fa-paper-plane"></i>Send</button>
+
+          <label id="file-label" for="file">IMG</label>
+          <input type="file" name="file" id="file" class="inputfile" />
+          <button id="btn-send"><i class="fas fa-paper-plane"></i>Send</button>       
         </form>
       </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
