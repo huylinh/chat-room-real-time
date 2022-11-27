@@ -171,6 +171,7 @@ socket.on("sendToAll", (msg) => {
   if (found) {
     if (msg.id != selectId) {
       newMess(msg.id);
+      data.push(msg);
     } else {
       display(msg, "other-message");
     }
@@ -200,6 +201,8 @@ const display = (msg, type) => {
       `;
     msgDiv.innerHTML = innerText;
     displayMsg.appendChild(msgDiv);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
 };
 
 // querry
