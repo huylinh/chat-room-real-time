@@ -1,3 +1,7 @@
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
+
 const socket = io();
 const msgText = document.querySelector("#msg");
 const btnSend = document.querySelector("#btn-send");
@@ -8,21 +12,22 @@ var output = document.getElementById('output');
 let data;
 let selectId = 1; //mac dinh chu cua hang noi chuyen voi nguoi 1
 let listUsers;
+let unseenMess=[];
 
-axios.get('https://sheetdb.io/api/v1/eqmb0knb7l8rv')
+axios.get('http://localhost:3001/api/chat')
 .then(function (response) {
 
   //Sau khi lay duoc data
 
   //Chuong trinh se chay sau khi lay het data
   
+  console.log(response, response.data.messages);
 
-  data = response.data;
+  data = response.data.messages;
 
-  main();
-  console.log(data);
-  if (id==-1) hienthiNguoiDung();
+  main(data);
   hienthiData();
+  if (id_user==-1) hienthiNguoiDung();
 })
 .catch(function (error) {
   console.log(error);
@@ -33,22 +38,39 @@ function hienthiData() {
 
   document.querySelector(".message").innerHTML = "";
 
-  if (id == -1) {
+  if (id_user == -1) {
     data.forEach(element => {
-      console.log("Vong lap trong hien thi data",element)
-      if (element.id == id && element.to == selectId) {   //chu cua hang
+      if (element.id_user == id_user && element.to == selectId) {   //chu cua hang
         display(element,"you-message");
-      } else if (element.id == selectId)  //
-        display(element,"other-message");
-  
+      } else {
+        if (!element.seen) {
+          let seen = unseenMess.findIndex(e => e.id_user == element.id_user)
+
+          if(seen!=-1) {
+            unseenMess[seen].count++;
+          }
+          else {
+            unseenMess.push({
+              id_user: element.id_user,
+              count: 1,
+            })
+          }
+        } 
+        if (element.id_user == selectId)
+        {
+          display(element,"other-message");
+
+        }
+      }
+  console.log("unseenArray: ",unseenMess);
+
     });
   }
   else {
     data.forEach(element => {
-      console.log("Vong lap trong hien thi data",element)
-      if (element.id == id) {   //tin nhan cua ban than
+      if (element.id_user == id_user) {   //tin nhan cua ban than
         display(element,"you-message");
-      } else if (element.id == -1 && element.to == id)  //neu k phai chua cua hang => mac dinh noi chuyen voi doi tuong la chu cua hang id = -1, con khong thi tuy vao selectId
+      } else if (element.id_user == -1 && element.to == id_user)  //neu k phai chua cua hang => mac dinh noi chuyen voi doi tuong la chu cua hang id = -1, con khong thi tuy vao selectId
         display(element,"other-message");
   
     });
@@ -56,20 +78,32 @@ function hienthiData() {
 }
 
 function hienthiNguoiDung() {
-  const key = 'id';
+  const key = 'id_user';
   listUsers = [...new Map(data.map(item =>
     [item[key], item])).values()];
 
+    console.log(unseenMess,listUsers)
   listUsers.forEach(element => {
-    if (element.id != id) {
+    let unseenNumber = 0;
+    let unseenTag = '';
+    
+    if (element.id_user != id_user) {
+      console.log(element.id_user);
+      let unseenUser = unseenMess.findIndex(e => e.id_user == element.id_user)
+      console.log("unseenUser",unseenUser)
+      if( unseenUser != -1) {
+        unseenNumber = unseenMess[unseenUser].count;
+        unseenTag = `<span>${unseenNumber}<span>`
+      }
       document.getElementById('list-wrap').innerHTML += `
-      <div class="user-select" id=${element.id}>
+      <div class="user-select" id=${element.id_user}>
       <div class="l-user-name">
         ${element.name}
       </div>
       <div class="l-user-time">
         20ms
       </div>
+      ${unseenTag}
     </div>`
     }
   });
@@ -85,7 +119,6 @@ function hienthiNguoiDung() {
   })
 
   highLight(selectId);
-
 }
 
 function highLight(id) {
@@ -99,39 +132,67 @@ function highLight(id) {
 
 function newMess(id) {
   //xoa het mau neu co
+  let number;
   console.log("New mess ID: ", id);
+  if (document.getElementById(id).querySelector('span')) {
+    let current = parseInt(document.getElementById(id).querySelector('span').textContent);
+    console.log(current);
+    current++;
+    document.getElementById(id).querySelector('span').innerHTML = current;
+  } else {
+    const span = document.createElement("span");
+    number = document.createTextNode(1);
+    span.appendChild(number);
+    document.getElementById(id).appendChild(span);
+
+  }
   document.getElementById(id).classList.add('user-new-mess');
+  
+  
+  
+  
 }
 
 function readed(id) {
+
+  axios({
+    method: 'put',
+    url: 'http://localhost:3001/api/chat',
+    data: {
+      id_user: id,
+      seen: 1,
+    }
+});
+
+  document.getElementById(id).querySelector('span')?.remove();
   document.getElementById(id).classList.remove('user-new-mess');
 }
 
 
 
 
-let id;
+let id_user;
 let name;
 
-function main() {
+function main(data) {
   do {
-    id = prompt("what is your id");
+    id_user = prompt("what is your id");
     // if(id!=-1) name = prompt("What is your name: "); else name = "Chu cua hang";
   
     //chu cua hang
-    if (id == -1) {
+    if (id_user == -1) {
       name = "Nhan vien tu van";
       break;
     }
   
-    const found = data.find(element => element.id == id);
+    const found = data.find(element => element.id_user == id_user);
     
     if (found) {
       name = found.name;
     } else {
       name = prompt("Chao mung ban moi, ten cua ban la: ");
     }
-  } while (!id);
+  } while (!id_user);
 
   document.querySelector("#your-name").textContent = name;
 }
@@ -152,9 +213,9 @@ btnSend.addEventListener("click", (e) => {
 
 const sendMsg = (message) => {
   let msg = {
-    id: id,
+    id_user: id_user,
     name: name,
-    to:  id==-1? selectId : -1,
+    to:  id_user==-1? selectId : -1,
     message: message.trim(),
     time: new Date().toLocaleTimeString()
   };
@@ -166,20 +227,22 @@ const sendMsg = (message) => {
 
 socket.on("sendToAll", (msg) => {
 
-  const found = data.find(element => element.id == msg.id);
+  const found = data.find(element => element.id_user == msg.id_user);
 
   if (found) {
-    if (msg.id != selectId) {
-      newMess(msg.id);
+    if (msg.id_user != selectId) {
+      if (id_user==-1) newMess(msg.id_user);
       data.push(msg);
     } else {
       display(msg, "other-message");
     }
   } else {
     data.push(msg);
-    document.getElementById('list-wrap').innerHTML = '';
-    hienthiNguoiDung();
-    newMess(msg.id);
+    if (id_user == -1) {
+      document.getElementById('list-wrap').innerHTML = '';
+      hienthiNguoiDung();
+      newMess(msg.id_user);
+    }
   }
 
   
@@ -227,8 +290,6 @@ document.getElementById("file").addEventListener('change', (e) => {
     hasImg = true;
 })
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-storage.js";
 
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://firebase.google.com/docs/web/learn-more#config-object

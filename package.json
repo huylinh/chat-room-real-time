@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node server.js",
+    "start-sv": "nodemon --exec babel-node server.js"
+
   },
   "keywords": [],
   "author": "",

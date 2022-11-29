@@ -3,6 +3,9 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("ChatData", {
+      id_message: {
+        type: Sequelize.INTEGER,
+      },      
       id_user: {
         type: Sequelize.INTEGER,
       },
@@ -16,7 +19,10 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       time: {
-        type: Sequelize.DATE,
+        type: Sequelize.TEXT,
+      },
+      seen: {
+        type: Sequelize.BOOLEAN,
       },
     });
   },

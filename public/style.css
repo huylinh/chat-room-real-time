@@ -194,9 +194,10 @@ body {
     justify-content: space-between;
     box-shadow: rgb(149 157 165 / 20%) 0px 8px 24px;
     padding: 10px 20px;
-    width: 200px;
+    width: 300px;
     margin: 10px;
   cursor: pointer;
+  position: relative;
 }
 
 .user-selected{
@@ -216,4 +217,15 @@ body {
   50% {
     opacity: 0;
   }
+}
+
+.user-select span {
+  display: block;
+  position: absolute;
+  right: 45%;
+  background: red;
+  padding: 0 10px;
+  border-radius: 100%;
+  color: white;
+  font-weight: 900;
 }

@@ -13,11 +13,13 @@ module.exports = (sequelize, DataTypes) => {
   }
   ChatData.init(
     {
+      id_message: DataTypes.INTEGER,
       id_user: DataTypes.INTEGER,
       name: DataTypes.STRING,
       to: DataTypes.INTEGER,
       message: DataTypes.TEXT,
       time: DataTypes.DATE,
+      seen: DataTypes.BOOLEAN,
     },
     {
       sequelize,

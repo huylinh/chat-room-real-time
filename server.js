@@ -7,7 +7,7 @@ const { default: initAPIRoutes } = require("./src/routers/api");
 const app = express();
 const http = require("http").createServer(app);
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
@@ -25,14 +25,15 @@ io.on("connection", (socket) => {
     console.log("gui mess on sever: ", msg);
     axios({
       method: "post",
-      url: "https://sheetdb.io/api/v1/eqmb0knb7l8rv",
+      url: "http://localhost:3001/api/chat",
       data: {
-        id: msg.id,
+        id_message: new Date().getTime(),
+        id_user: msg.id_user,
         name: msg.name,
         message: msg.message,
         to: msg.to,
-        realtime: new Date(),
-        time: new Date().toLocaleTimeString(),
+        time: new Date(),
+        seen: false,
       },
     });
     socket.broadcast.emit("sendToAll", msg);

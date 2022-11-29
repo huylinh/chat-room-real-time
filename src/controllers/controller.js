@@ -30,9 +30,20 @@ let postMessage = async (req, res) => {
   });
 };
 
+let seenMessage = async (req, res) => {
+  let data = req.body;
+  let response = services.seenMessage(data);
+  res.status(200).json({
+    response: response,
+  });
+};
+
+
+
 module.exports = {
   getAllMessage,
   getUserMessage,
   getAllUser,
   postMessage,
+  seenMessage,
 };

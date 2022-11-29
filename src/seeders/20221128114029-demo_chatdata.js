@@ -16,18 +16,22 @@ module.exports = {
       "ChatData",
       [
         {
+          id_message: 1,
           id_user: 1,
           name: "Minh",
           to: -1,
           message: "Chào ông chủ",
           time: new Date(),
+          seen: 0,
         },
         {
+          id_message: 2,
           id_user: -1,
           name: "Admin",
           to: 1,
           message: "Xin chào quý khách",
           time: new Date(),
+          seen: 0,
         },
       ],
       {}
