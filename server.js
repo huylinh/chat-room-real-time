@@ -1,4 +1,5 @@
 const axios = require("axios");
+const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
 const { default: initAPIRoutes } = require("./src/routers/api");
@@ -9,6 +10,12 @@ const http = require("http").createServer(app);
 const PORT = process.env.PORT || 3001;
 
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
 initAPIRoutes(app);
 
 const io = require("socket.io")(http);
