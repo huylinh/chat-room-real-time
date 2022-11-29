@@ -16,15 +16,15 @@ let allMessages = () => {
   });
 };
 
-let userMessages = (id) => {
+let userMessages = (id_user) => {
   return new Promise((resolve, reject) => {
     let condition = {
       [Op.or]: [
         {
-          id_user: id,
+          id_user: id_user,
         },
         {
-          to: id,
+          to: id_user,
         },
       ],
     };
@@ -60,7 +60,7 @@ let insertMessage = (data) => {
   return new Promise((resolve, reject) => {
     try {
       let response = db.ChatData.create({
-        id_user: data.id,
+        id_user: data.id_user,
         name: data.name,
         to: data.to,
         message: data.message,
@@ -74,9 +74,9 @@ let insertMessage = (data) => {
 };
 
 let updateMessage = (data) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      mess = db.ChatData.findOne({
+      let mess = await db.ChatData.findOne({
         where: {
           id: data.id,
         },

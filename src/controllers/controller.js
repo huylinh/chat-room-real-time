@@ -8,7 +8,7 @@ let getAllMessage = async (req, res) => {
 };
 
 let getUserMessage = async (req, res) => {
-  let id = req.params.id;
+  let id = req.params.id_user;
   let data = await services.userMessages(id);
   return res.status(200).json({
     messages: data,
@@ -31,9 +31,10 @@ let postMessage = async (req, res) => {
 };
 
 let putMessage = async (req, res) => {
-  let id = req.id;
-  let seen = req.seen;
-  console.log(id, seen);
+  await services.updateMessage(req.params);
+  return res.status(200).json({
+    mess: "OK",
+  });
 };
 
 module.exports = {

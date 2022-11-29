@@ -18,7 +18,7 @@
   },
   ...
   ]
-* GET /api/chat/:id : Lấy tất cả dữ liệu của một user gửi cho admin gửi hoặc admin gửi cho user
+* GET /api/chat/:id_user : Lấy tất cả dữ liệu của một user gửi cho admin gửi hoặc admin gửi cho user
   Giá trị trả về: messages: [
   {
   id_user,
@@ -39,9 +39,10 @@
   ]
 * POST /api/chat : Insert dữ liệu người dùng nhập trong ô chat vào database
   Input: body: {
-  id,
+  id_user,
   name,
   to,
   message,
   time
   }
+* PUT /api/chat/:id/:seen : update trạng thái seen của message với id = :id và set seen = :seen
