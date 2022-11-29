@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       to: DataTypes.INTEGER,
       message: DataTypes.TEXT,
       time: DataTypes.DATE,
+      seen: DataTypes.INTEGER,
     },
     {
       sequelize,

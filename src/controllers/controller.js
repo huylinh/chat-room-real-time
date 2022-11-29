@@ -30,9 +30,16 @@ let postMessage = async (req, res) => {
   });
 };
 
+let putMessage = async (req, res) => {
+  let id = req.id;
+  let seen = req.seen;
+  console.log(id, seen);
+};
+
 module.exports = {
   getAllMessage,
   getUserMessage,
   getAllUser,
   postMessage,
+  putMessage,
 };

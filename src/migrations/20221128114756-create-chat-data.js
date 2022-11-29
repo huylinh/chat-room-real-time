@@ -3,6 +3,12 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("ChatData", {
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true,
+      },
       id_user: {
         type: Sequelize.INTEGER,
       },
@@ -17,6 +23,9 @@ module.exports = {
       },
       time: {
         type: Sequelize.DATE,
+      },
+      seen: {
+        type: Sequelize.INTEGER,
       },
     });
   },

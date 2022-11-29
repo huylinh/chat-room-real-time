@@ -21,6 +21,7 @@ module.exports = {
           to: -1,
           message: "Chào ông chủ",
           time: new Date(),
+          seen: 1,
         },
         {
           id_user: -1,
@@ -28,6 +29,7 @@ module.exports = {
           to: 1,
           message: "Xin chào quý khách",
           time: new Date(),
+          seen: 1,
         },
       ],
       {}

@@ -8,6 +8,7 @@ const initAPIRoutes = (app) => {
   router.get("/api/chat/:id", controller.getUserMessage);
   router.post("/api/chat", controller.postMessage);
   router.get("/api/user", controller.getAllUser);
+  router.put("/api/user/:id/:seen", controller.putMessage);
   return app.use("/", router);
 };
 

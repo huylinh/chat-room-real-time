@@ -5,7 +5,7 @@ let allMessages = () => {
   return new Promise(async (resolve, reject) => {
     try {
       let messages = db.ChatData.findAll({
-        attributes: ["id_user", "name", "to", "message", "time"],
+        attributes: ["id", "id_user", "name", "to", "message", "time", "seen"],
         raw: true,
         order: [["time", "ASC"]],
       });
@@ -30,7 +30,7 @@ let userMessages = (id) => {
     };
     try {
       let messages = db.ChatData.findAll({
-        attributes: ["id_user", "name", "to", "message", "time"],
+        attributes: ["id", "id_user", "name", "to", "message", "time", "seen"],
         where: condition,
         order: [["time", "ASC"]],
         raw: true,
@@ -73,9 +73,28 @@ let insertMessage = (data) => {
   });
 };
 
+let updateMessage = (data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      mess = db.ChatData.findOne({
+        where: {
+          id: data.id,
+        },
+      });
+      mess.update({
+        seen: data.seen,
+      });
+      resolve("Success");
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 module.exports = {
   allMessages,
   userMessages,
   insertMessage,
   allUsers,
+  updateMessage,
 };
