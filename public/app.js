@@ -13,6 +13,7 @@ let data;
 let selectId = 1; //mac dinh chu cua hang noi chuyen voi nguoi 1
 let listUsers;
 let unseenMess=[];
+let onlineUser = [];
 
 axios.get('http://localhost:3001/api/chat')
 .then(function (response) {
@@ -93,15 +94,15 @@ function hienthiNguoiDung() {
       console.log("unseenUser",unseenUser)
       if( unseenUser != -1) {
         unseenNumber = unseenMess[unseenUser].count;
-        unseenTag = `<span>${unseenNumber}<span>`
+        unseenTag = `<span class="newmess">${unseenNumber}<span>`
       }
       document.getElementById('list-wrap').innerHTML += `
-      <div class="user-select" id=${element.id_user}>
+    <div class="user-select" id=${element.id_user}>
       <div class="l-user-name">
         ${element.name}
       </div>
       <div class="l-user-time">
-        20ms
+        <span class="indicator"></span>
       </div>
       ${unseenTag}
     </div>`
@@ -134,23 +135,40 @@ function newMess(id) {
   //xoa het mau neu co
   let number;
   console.log("New mess ID: ", id);
-  if (document.getElementById(id).querySelector('span')) {
-    let current = parseInt(document.getElementById(id).querySelector('span').textContent);
+  if (document.getElementById(id).querySelector('.newmess')) {
+    let current = parseInt(document.getElementById(id).querySelector('.newmess').textContent);
     console.log(current);
     current++;
-    document.getElementById(id).querySelector('span').innerHTML = current;
+    document.getElementById(id).querySelector('.newmess').innerHTML = current;
   } else {
     const span = document.createElement("span");
+    span.classList.add('newmess');
     number = document.createTextNode(1);
     span.appendChild(number);
     document.getElementById(id).appendChild(span);
 
   }
+
   document.getElementById(id).classList.add('user-new-mess');
   
-  
-  
-  
+  // if (document.getElementById(id).querySelector('.indicator').classList.contains('online'))  
+
+  if (document.getElementById(id).querySelector('.indicator').classList.contains('online') && onlineUser[id]) {
+    clearTimeout(onlineUser[id]);
+    document.getElementById(id).querySelector('.indicator').classList.add('online');
+    onlineUser[id] = setTimeout(
+      function() {
+          document.getElementById(id).querySelector('.indicator').classList.remove('online');
+        }, 30000);
+  } else {
+    document.getElementById(id).querySelector('.indicator').classList.add('online');
+    onlineUser[id] = setTimeout(
+      function() {
+          document.getElementById(id).querySelector('.indicator').classList.remove('online');
+        }, 30000);
+  }
+
+
 }
 
 function readed(id) {
@@ -164,7 +182,7 @@ function readed(id) {
     }
 });
 
-  document.getElementById(id).querySelector('span')?.remove();
+  document.getElementById(id).querySelector('.newmess')?.remove();
   document.getElementById(id).classList.remove('user-new-mess');
 }
 
@@ -227,23 +245,37 @@ const sendMsg = (message) => {
 
 socket.on("sendToAll", (msg) => {
 
+  
+
   const found = data.find(element => element.id_user == msg.id_user);
 
-  if (found) {
-    if (msg.id_user != selectId) {
-      if (id_user==-1) newMess(msg.id_user);
-      data.push(msg);
-    } else {
-      display(msg, "other-message");
-    }
+  if (id_user != -1 && msg.to == id_user) {
+    display(msg, "other-message");
   } else {
+//Chu cua hang
+
+if (found) { //neu la nguoi dung trong danh sach
+  if (msg.id_user != selectId) { //va hien dang khong select thang day
+    newMess(msg.id_user);
     data.push(msg);
-    if (id_user == -1) {
-      document.getElementById('list-wrap').innerHTML = '';
-      hienthiNguoiDung();
-      newMess(msg.id_user);
-    }
+  } else {
+    newMess(msg.id_user);
+    display(msg, "other-message");
   }
+} else {
+  data.push(msg);
+  if (id_user == -1) {
+    document.getElementById('list-wrap').innerHTML = '';
+    hienthiNguoiDung();
+    newMess(msg.id_user);
+  }
+}
+
+
+
+  }
+
+
 
   
   //mỗi lần mình display mesage là phải cập nhật cho scrollop = vị trí y của chat xuống cuối

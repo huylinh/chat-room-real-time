@@ -209,8 +209,9 @@ body {
 }
 
 .user-new-mess {
-  background: rgb(234, 77, 77);
-  animation: blinker 1s linear infinite;
+  /* background: rgb(234, 77, 77); */
+  /* Tam thoi bo nhap nhay */
+  /* animation: blinker 1s linear infinite; */
 }
 
 @keyframes blinker {
@@ -219,7 +220,7 @@ body {
   }
 }
 
-.user-select span {
+.user-select span:not(.indicator) {
   display: block;
   position: absolute;
   right: 45%;
@@ -228,4 +229,28 @@ body {
   border-radius: 100%;
   color: white;
   font-weight: 900;
+}
+
+/* Online status */
+
+.indicator {
+  border-radius: 50%;
+  background: #4a4d4a;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
+.indicator.online {
+  background: #28B62C;
+
+  -webkit-animation: pulse-animation 2s infinite linear;
+}
+
+@-webkit-keyframes pulse-animation {
+0% { -webkit-transform: scale(1); }
+25% { -webkit-transform: scale(1); }
+  50% { -webkit-transform: scale(1.2) }
+  75% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
 }
