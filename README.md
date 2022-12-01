@@ -39,6 +39,13 @@
   },
   ...
   ]
+
+* PUT /api/chat update trạng thái seen của message
+  Input: body: {
+  id_user,
+  seen
+  }
+
 * POST /api/chat : Insert dữ liệu người dùng nhập trong ô chat vào database
   Input: body: {
   id,
