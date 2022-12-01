@@ -45,4 +45,8 @@
   message,
   time
   }
-* PUT /api/chat/:id/:seen : update trạng thái seen của message với id = :id và set seen = :seen
+* PUT /api/chat update trạng thái seen của message
+  Input: body: {
+  id_user,
+  seen
+  }
