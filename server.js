@@ -2,6 +2,7 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 const express = require("express");
 const path = require("path");
+const { default: configViewEngine } = require("./src/config/viewEngine");
 const { default: initAPIRoutes } = require("./src/routers/api");
 
 const app = express();
@@ -9,13 +10,14 @@ const http = require("http").createServer(app);
 
 const PORT = 3001;
 
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 app.use(bodyParser.json());
+configViewEngine(app);
 initAPIRoutes(app);
 
 const io = require("socket.io")(http);

@@ -7,6 +7,8 @@
 
 - Về api:
 
+* GET /api : render ra views => có thể cung cấp cho nhóm khác sử dụng
+
 * GET /api/chat : Lấy tất cả dữ liệu có trong bảng.
   Giá trị trả về: messages: [
   {
@@ -44,4 +46,9 @@
   to,
   message,
   time
+  }
+
+* POST /api/chat/all : Phát message đến tất cả người dùng => có thể cung cấp cho nhóm khác sử dụng
+  Input: body: {
+  message,
   }
