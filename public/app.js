@@ -40,6 +40,7 @@ function hienthiData() {
   document.querySelector(".message").innerHTML = "";
 
   if (id_user == -1) {
+    console.log("hien thi mess cua ",selectId,data);
     data.forEach(element => {
       if (element.id_user == id_user && element.to == selectId) {   //chu cua hang
         display(element,"you-message");
@@ -57,6 +58,7 @@ function hienthiData() {
             })
           }
         } 
+
         if (element.id_user == selectId)
         {
           display(element,"other-message");
@@ -259,6 +261,7 @@ if (found) { //neu la nguoi dung trong danh sach
     newMess(msg.id_user);
     data.push(msg);
   } else {
+    data.push(msg);
     newMess(msg.id_user);
     display(msg, "other-message");
   }
